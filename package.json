@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "type": "module",
+  "repository": "https://github.com/Fordi/cattle-chute",
   "scripts": {
     "test": "node --test"
   },
