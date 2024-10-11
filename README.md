@@ -2,7 +2,12 @@
 
 Simple promise concurrency limiter.
 
-### `new CattleChute({ concurrency?: number = 10, report?: (queued: number, running: number) => void } = {})`
+```typescript
+new CattleChute({
+  concurrency?: number = 10,
+  report?: (queued: number, running: number) => void
+} = {})
+```
 
 Creates a new cattle chute, which you can think of as a concurrency-limited pipeline for async functions.
 
@@ -11,7 +16,11 @@ Creates a new cattle chute, which you can think of as a concurrency-limited pipe
 | concurrency | Amount of concurrency to allow in this chute.                    |
 | report      | Callback function for reporting changes in the chute's contents. |
 
-### `CattleChute#add(job: () => T | Promise<T>): Promise<T>`
+-----
+
+```typescript
+CattleChute.prototype.add(job: () => T | Promise<T>): Promise<T>
+```
 
 Add a job to the chute. The job is added to a queue, but not executed immediately, instead executing once there's
 space open in the chute. Returns a promise that resolves/rejects in tandem with the job's resolution.
@@ -20,7 +29,14 @@ space open in the chute. Returns a promise that resolves/rejects in tandem with 
 | ---- | ------------------------------------------------------------------------------------ |
 | job  | The job to run. This should create and return a promise. AsyncFunctions work as well |
 
-### `CattleChute#map(Iterable<T>: items, processor: (item: T, index: number, items: Iterable<T>) => Promise<Array<T>>)`
+-----
+
+```typescript
+CattleChute.prototype.map(
+  Iterable<T>: items,
+  processor: (item: T, index: number, items: Iterable<T>) => Promise<Array<T>>
+)
+```
 
 Map an array, array-like, or other iterable of items into ordered jobs, and return a promise of their results.
 
@@ -29,7 +45,15 @@ Map an array, array-like, or other iterable of items into ordered jobs, and retu
 | items     | An array or iterable                                                                  |
 | processor | An array comprehension function (like with Array#map) that returns a value or promise |
 
-### `CattleChute#cancel(job: () => T, reason: string = "Cancelled") => boolean`
+-----
+
+
+```typescript
+CattleChute.prototype.cancel(
+  job: () => T,
+  reason: string = "Cancelled"
+) => boolean
+```
 
 Attempt to cancel a job. If the job has not yet been started, this pulls it out of the queue and returns true. If it
 has been started, this returns false.
@@ -41,10 +65,16 @@ If the job is successfully cancelled, the promise returned from `#add` will reje
 | job    | The job to cancel                |
 | reason | The reason the job was cancelled |
 
-### `CattleChute#flush() => Promise<void>`
+-----
+
+```typescript
+CattleChute.prototype.flush() => Promise<void>
+```
 
 Returns a promise that resolves when the chute is empty (there are no queued or running jobs). Despite the name, this
 does not actually trigger the chute to start running - it is always running.
+
+-----
 
 ## Example of use
 
